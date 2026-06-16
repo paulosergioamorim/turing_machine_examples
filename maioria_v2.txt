@@ -1,0 +1,76 @@
+; maioria: a soma dos símbolos (0 ou 1) da string w é >= floor(|w|/2)?
+
+; aceita epsilon
+0 _ 1 * halt
+; coloca o 1o separador
+0 * * l 1
+1 * # r 2
+
+; vai até o fim da palavra ou 1 marcado (x)
+2 * * r *
+2 x * l 3
+2 _ * l 3
+; varre até o # se preciso
+3 * * l *
+; countou todos os 1s. fim do loop
+3 # * r 6
+; marca um 1
+3 1 x l 4
+; passa do #
+4 * * l 4
+4 # * l 5
+; incrementa 1
+5 * * l 5
+; volta para 1o loop
+5 _ 1 r 2
+; coloca o 2o separador
+6 * * l *
+6 _ $ r 7
+; vai até o #
+7 * * r 7
+7 # * r 8
+; começa a contar a palavra de 2 em 2 símbolos
+; ignora simbolo já contado
+8 y * r *
+; contou um símbolo
+8 * y r 9
+; fim da palavra. fim da contagem
+8 _ * l 12
+; fim da palavra. fim da contagem (visto que é floor()) 
+9 _ * l 12
+; contou mais um símbolo. incrementa 1
+9 * y l 10
+; vai até o inicio da fita e incrementa 1
+10 * * l *
+10 _ 1 r 11
+11 * * r *
+; retorna para o 2o loop
+11 $ * r 7
+; limpa o que sobrou...
+12 * _ l *
+12 # _ l 13
+
+; nesse momento, temos na fita floor(|w|/2) $ S, sendo S a soma dos digitos
+; queremos que S seja maior. Abreviação: x$y
+; queremos que y >= x. Geq(y, x) = Leq(x, y) = IsZero(x - y)
+
+; vai até o início da fita (no x)
+13 * * l *
+13 _ * r 14
+; decrementa 1 de x
+14 1 _ r 16
+; a subtração é zero. limpa, para e aceita
+14 $ _ r 15
+15 * _ r *
+15 _ 1 * halt
+; vai até o fim da fita (no y)
+16 * * r *
+16 $ * r 17
+17 * * r *
+17 _ * l 18
+; decrementa 1 de y (o 1 que foi decrementado de x)
+18 1 _ l 13
+; x > y. limpa, para e rejeita
+18 $ _ l 19
+19 * _ l *
+19 _ 0 * halt 
