@@ -1,0 +1,102 @@
+;encontrador de tamanho da string
+0 * * l 0
+0 _ # l escreve0
+
+;      começa escrevendo 0 antes do espaço em branco
+escreve0 * 0 * gotoend
+
+;      percorrer até o ultimo caracter diferente de 0 ou 1
+gotoend * * r *
+gotoend _ * l escrevenum
+gotoend u * l escrevenum
+gotoend z * l escrevenum
+
+;      escreve z para zero e u para 1
+escrevenum 0 z * moveinicio
+escrevenum 1 u * moveinicio
+escrevenum # * l shift_num0
+escrevenum * * l *
+
+;      move para o inicio da fita
+
+moveinicio * * l moveinicio
+moveinicio # * l inc1
+
+;      incrementa um no numero antes do # apos percorrer até o ultimo digito que nao foi especificado
+
+inc1 0 1 * gotoend
+inc1 1 0 l propaga
+
+;      propaga o incrementador para tras
+
+propaga * 1 * gotoend
+propaga 1 0 l propaga
+
+;aqui shifta um numero binario para a direita
+
+shift_num0 * * l *
+shift_num0 _ * r shift_num1
+
+shift_num1 1 _ r shift_lembra1
+shift_num1 0 _ r shift_lembra0
+
+shift_lembra1 1 1 r *
+shift_lembra1 0 1 r shift_lembra0
+shift_lembra0 0 0 r *
+shift_lembra0 1 0 r shift_lembra1
+
+shift_lembra1 # * l mov0
+shift_lembra0 # * l mov0
+
+
+mov0 * * l *
+mov0 _ $ l write0
+
+write0 * 0 * sum_digits0
+sum_digits0 * * r *
+sum_digits0 _ * l sum_digits1
+sum_digits1 u _ l sum_gotostart
+sum_digits1 z _ l *
+sum_digits1 # _ l sub0
+
+sub0 * * r *
+sub0 _ * l sub1
+
+sub1 $ _ l sub2
+sub2 * _ l *
+sub2 _ 1 * halt
+
+sub1 0 _ l dec0_0 ; dec0_0 : vai pra dps do $
+dec0_0 * * l *
+dec0_0 $ * l dec0_1 ; chegou no $
+dec0_1 * * l * ; aguarda chegar em 1 ou 0
+dec0_1 1 u r sub0
+dec0_1 0 z r sub0
+
+sub1 1 _ l dec1_0 ; dec1_0 : vai para dps do $
+dec1_0 * * l *
+dec1_0 $ * l dec1_1 ; chegou no $
+dec1_1 * * l * ; aguarda chegar em 1 ou 0
+dec1_1 _ 0 r clear ; x < y
+dec1_1 1 z r sub0
+
+dec1_1 0 z l dec1_2 ; propaga vai 1
+dec1_2 _ 0 r clear ; x < y
+dec1_2 0 0 l *
+dec1_2 1 0 r sub0
+
+clear * _ r *
+clear _ * l clear0
+clear0 _ * l *
+clear0 * * * halt
+
+sum_gotostart * * l *
+sum_gotostart $ * l sum_inc1
+
+sum_inc1 0 1 * sum_digits0
+sum_inc1 1 0 l sum_propaga
+
+;      propaga o incrementador para tras
+
+sum_propaga * 1 * sum_digits0
+sum_propaga 1 0 l *

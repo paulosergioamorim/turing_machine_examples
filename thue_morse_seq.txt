@@ -1,0 +1,54 @@
+; Thue-Morse Sequence
+
+; aceita epsilon (0 em unário)
+0 _ 0 * halt
+0 * * l setup0
+setup0 * # l setup1
+setup1 * 0 r 1
+
+; posiciona a cabeça no início da palavra e para
+-1 * * l *
+-1 _ * r halt
+
+; vai até o fim da fita
+1 * * r *
+1 _ * l 2
+; consome uma iteração do loop
+2 1 _ l 3
+; fim do loop
+2 # _ l -1
+; passa do #
+3 * * l *
+3 # * l 4
+
+; x = 1
+; y = 2
+
+; inverte e marca a sequência atual (n-1)
+4 0 x l *
+4 1 y l *
+; voltando para duplicar...
+4 _ * r 5
+; vai até o #
+5 * * r *
+5 # * l 6
+
+; percorre até achar um bit ainda não processado
+; necesário pois bits anteriores já podem ter sido processados
+6 * * l 6
+; desmarca e concatena 0
+6 x 1 l 7
+; desmarca e concatena 1
+6 y 0 l 8
+; não achou bit não processado? retorna para o loop
+6 _ * r 1
+
+; concatena 0
+7 * * l *
+; voltando para processar mais bits
+7 _ 0 r 5
+
+; concatena 1
+8 * * l *
+; voltando para processar mais bits
+8 _ 1 r 5

@@ -1,0 +1,22 @@
+; L = { 0^n ; n = 2^k, k natural }
+
+0 _ 0 * halt
+0 * * l 1
+1 * # r strlen0
+
+strlen0 * * r *
+strlen0 _ * l strlen1
+strlen1 0 _ l strlen2
+strlen1 # _ l check0
+strlen2 * * l *
+strlen2 # * l strlen3
+strlen3 0 1 r strlen0
+strlen3 1 0 l strlen3
+strlen3 _ 1 r strlen0
+
+check0 0 _ l *
+check0 1 _ l check1
+check1 _ 1 * halt
+check1 * _ l clear0
+clear0 * _ l *
+clear0 _ 0 * halt

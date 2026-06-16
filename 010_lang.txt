@@ -1,0 +1,30 @@
+; L = { 0^n1^n0^n : n>=1 }
+; procurando primeiro 0
+
+0 _ * * halt-reject
+0 * * * start
+start 1 * * halt-reject ; 
+start 0 X r 1           ; escreve um X e começa a procurar um 1
+start * * r start       ;
+start _ * l halt-accept ;  
+
+; procurando 1
+1 0 * r 1
+1 * * r 1
+1 _ * l halt-reject
+1 1 Y r 2
+
+; procurando segundo 0
+2 1 * r 2
+2 * * r 2
+2 _ * l halt-reject
+2 0 Z r 3
+
+; vai até o fim da palavra
+3 0 * r 3
+3 1 * * halt-reject ; encontrou um 1 depois
+3 _ * l 4
+
+; volta até encontrar o X
+4 X * r start
+4 * * l 4
