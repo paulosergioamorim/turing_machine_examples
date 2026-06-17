@@ -1,0 +1,93 @@
+; MDC em unário
+
+0 _ * * reject0
+0 * * * check-zeros0
+
+; X#Y
+
+; se X <= Y, então main0 lê #
+; caso contrário (X > Y), então main2 lê _ no fim da string
+main0 x * l *
+main0 1 x r main1
+main0 # * r equals0 ; verifica se é igual
+main1 * * r *
+main1 # * r main2
+main2 y * r *
+main2 _ * l geq0 ; faz X = X - Y
+main2 1 y l main3
+main3 * * l *
+main3 x * r main0
+
+geq0 y 1 l geq1
+geq0 # * l geq6
+geq1 * * l *
+geq1 # * l geq2
+geq2 * * l *
+geq2 _ * r geq3
+geq3 x _ r geq4
+geq4 * * r *
+geq4 # * r geq5
+geq5 * * r *
+geq5 1 * l geq0
+geq6 * * l *
+geq6 x 1 l *
+geq6 _ * r main0
+
+less0 y # l less1
+less1 * * l *
+less1 # y l *
+less1 _ * r less2
+less2 x _ r less3
+less2 1 * * main0
+less3 * * r *
+less3 # * l less4
+less3 1 * l less4
+less4 * 1 * less1
+
+equals0 y * r *
+equals0 1 * l less0 ; x < y estritamente menor. faz Y = Y - X
+equals0 _ * l equals1
+equals1 * _ l *
+equals1 # _ l equals2
+equals2 x 1 l *
+equals2 _ * r halt
+
+; TRATA CASOS MDC(X,0) OU MDC(0,X), ONDE X != 0
+start0 # _ r halt
+start0 * * r start1
+start1 * * r *
+start1 _ * l start2
+start2 # _ l start3
+start2 * * l start4
+start3 * * l *
+start3 _ * r halt
+start4 * * l *
+start4 _ * r main0
+
+; VERIFICA SE TEM ZERO
+check-zeros0 * * r *
+check-zeros0 _ * l check-#0
+check-zeros0 0 * r reject0
+
+; VERIFICA SE TEM MAIS DE UM #
+check-#0 * * l *
+check-#0 _ * r reject0
+check-#0 # * l check-#1
+check-#1 * * l *
+check-#1 _ * r check-empty0
+check-#1 # * r reject0
+
+; VERIFICA SE É MDC(0,0)
+check-empty0 * * * start0
+check-empty0 # * r check-empty1
+check-empty0 _ * * start0
+check-empty1 _ * l reject0
+check-empty1 * * l check-empty2
+check-empty2 * * l *
+check-empty2 _ * r start0
+
+; REJEITA. LIMPA FITA, ESCREVE 0 E PARA
+reject0 * * r *
+reject0 _ * l reject1
+reject1 * _ l *
+reject1 _ 0 * halt
